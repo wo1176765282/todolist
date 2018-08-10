@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>便签</title>
+</head>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    body{
+        background: #cdcdcd;
+    }
+    .header{
+        width: auto;
+        height: 50px;
+        background: rgba(47,47,47,0.98);
+    }
+    .con{
+        width: 600px;
+        height: 50px;
+        margin: 0 auto;
+    }
+    .con lable{
+        line-height: 50px;
+        color: #ddd;
+        font-size: 24px;
+        cursor: pointer;
+    }
+    .con input{
+        float: right;
+        width: 60%;
+        height: 24px;
+        border-radius: 5px;
+        outline: none;
+        border: none;
+        box-shadow: 0 1px 0 rgba(255,255,255,.24) inset;
+        padding: 1px 0 0 10px;
+        margin-top: 12px;
+    }
+    .boxing{
+        width: 600px;
+        height: auto;
+        margin: 0 auto;
+    }
+    .boxing h3{
+        padding: 20px 0;
+        font-size: 23px;
+        /*height: 30px;*/
+        /*line-height: 30px;*/
+    }
+    .boxing span{
+        font-weight: bold;
+
+    }
+    .boxing i{
+        display: block;
+        float: right;
+        font-size: 13px;
+        background: #e6e6fa;
+        border-radius: 18px;
+        padding: 0 5px ;
+        text-align: center;
+    }
+    .bg{
+        width: 600px;
+        height: auto;
+    }
+    .inFor{
+        width: auto;
+        height: 32px;
+        background: #fff;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border-left: 5px solid #629a9c;
+    }
+    .inFor input{
+         display: block;
+         float: left;
+         width: 22px;
+         height: 22px;
+         margin: 6px 0 0 15px;
+         cursor: pointer;
+     }
+    .inFor1 input{
+        display: block;
+        float: left;
+        width: 22px;
+        height: 22px;
+        margin: 6px 0 0 15px;
+        cursor: pointer;
+    }
+    .inFor .text input{
+        width: 100%;
+        height: 100%;
+        border: none;
+        margin: 0;
+        outline: none;
+        color: #e0e0e0;
+    }
+    .inFor1 .text input{
+        width: 100%;
+        height: 100%;
+        border: none;
+        margin: 0;
+        outline: none;
+        color: #e0e0e0;
+    }
+    .text{
+        width: 505px;
+        height: 32px;
+        float: left;
+        margin-left: 15px;
+        line-height: 32px;
+        color: #333333;
+    }
+    .btn{
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #CCCCCC;
+        float: right;
+        margin: 6px 10px 0  0;
+        cursor: pointer;
+    }
+    .btn::after{
+        display: block;
+        content: "-";
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        text-align: center;
+        line-height: 10px;
+        margin: 3px 3px;
+    }
+    .inFor1{
+        width: auto;
+        height: 32px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border-left: 5px solid #629a9c;
+        background: #909090;
+        opacity: .5;
+    }
+</style>
+<body>
+<!--头部开始-->
+    <header class="header">
+        <div class="con">
+            <!--标签-->
+            <lable for="text">ToDoList</lable>
+            <input type="text" id="text" placeholder="请添加ToDo">
+        </div>
+    </header>
+<!--正在进行-->
+    <div class="boxing">
+        <h3>
+            <span>正在进行</span>
+            <i>10</i>
+        </h3>
+        <div class="bg"></div>
+    </div>
+<!--已经完成开始-->
+<div class="boxing">
+    <h3>
+        <span>已经完成</span>
+        <i>9</i>
+    </h3>
+    <div class="bg"></div>
+</div>
+</body>
+</html>
+<script>
+    let arr1=localStorage.arr1 ? localStorage.arr1.split(",") : [] ;//正在进行
+    let arr2=localStorage.arr2 ? localStorage.arr2.split(",") : [] ;//已经完成
+    let v=document.querySelector("#text");
+    let bg=document.querySelectorAll(".bg");
+    let i=document.querySelectorAll('.boxing h3 i');
+    let con1=bg[0];
+    let con2=bg[1];
+    i[0].innerText=arr1.length;
+    i[1].innerText=arr2.length;
+    let flag=true;
+
+    function update() {
+
+        i[0].innerHTML=arr1.length;
+        bg[0].innerHTML='';
+        i[1].innerHTML=arr2.length;
+        bg[1].innerHTML='';
+
+        localStorage.arr1=arr1.join(",");
+        localStorage.arr2=arr2.join(",");
+        arr1.forEach(function (item,index) {
+            let inFor=document.createElement("div");
+            inFor.className="inFor";
+            bg[0].appendChild(inFor);
+
+            let input1=document.createElement('input');
+            input1.setAttribute("type","button");
+            inFor.appendChild(input1);
+            input1.onclick=function () {
+                arr1.splice(index,1);
+                arr2.unshift(item);
+                update();
+            }
+
+            let text=document.createElement('div');
+            text.className="text";
+            text.innerText=item;
+            inFor.appendChild(text);
+
+            text.ondblclick=function () {
+                let inputAdd1=document.createElement("input");
+                inputAdd1.setAttribute("type","check");
+                let a=text.innerText;
+                text.innerText="";
+                inputAdd1.value=a;
+                text.appendChild(inputAdd1);
+                inputAdd1.focus();
+                inputAdd1.onkeydown=function (e) {
+                    if (e.keyCode == 13 && this.value!=""){
+                        arr1[index]=this.value;
+                        update();
+                    }
+                }
+                inputAdd1.onblur=function () {
+                    if (this.value!="") {
+                        arr1[index]=this.value;
+                        update();
+                    }
+                }
+            }
+
+
+
+
+
+            let btn=document.createElement('div');
+            btn.className="btn";
+            inFor.appendChild(btn);
+            btn.onclick=function () {
+                arr1.splice(index,1);
+                update()
+            }
+        })
+
+        arr2.forEach(function (item,index) {
+            let inFor=document.createElement("div");
+            inFor.className="inFor1";
+            bg[1].appendChild(inFor);
+            let input2=document.createElement('input');
+            input2.setAttribute("type","checkbox");
+            input2.setAttribute("checked","checked");
+            inFor.appendChild(input2);
+            input2.onclick=function () {
+                arr2.splice(index,1);
+                arr1.unshift(item);
+                update();
+            }
+            let text=document.createElement('div');
+            text.className="text";
+            text.innerText=item;
+            inFor.appendChild(text);
+
+            text.ondblclick=function () {
+                let inputAdd2=document.createElement("input");
+                inputAdd2.setAttribute("type","check");
+                let b=text.innerText;
+                text.innerText="";
+                inputAdd2.value=b;
+                text.appendChild(inputAdd2);
+                inputAdd2.focus();
+                inputAdd2.onkeydown=function (e) {
+                    if (e.keyCode == 13 && this.value!=""){
+                        arr2[index]=this.value;
+                        update();
+                    }
+
+                }
+                inputAdd2.onblur=function () {
+                    if (flag==false) {
+                        return
+                    }
+                    if (this.value!="") {
+                        arr2[index]=this.value;
+                        update();
+                    }
+
+                }
+
+
+            }
+
+
+            let btn=document.createElement('div');
+            btn.className="btn";
+            inFor.appendChild(btn);
+            btn.onclick=function () {
+                arr2.splice(index,1);
+                update()
+            }
+
+            if (flag==true) {
+                flag=false;
+            }
+
+
+
+        })
+
+        
+        
+    }
+update()
+
+
+    v.onkeydown=function (e) {
+        if (e.keyCode==13 && this.value!="") {
+            arr1.unshift(this.value);
+            this.value="";
+            update();
+        }
+    }
+
+
+
+
+
+</script>
